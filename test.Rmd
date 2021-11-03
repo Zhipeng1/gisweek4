@@ -1,16 +1,45 @@
 ---
-title: '6'
+title: 'Ineqaulity task '
 author: "zhipeng1"
 date: "2021/10/31"
 output: html_document 
 ---
 
-```{r 01}
-library(raster)
+```{r Load packages}
+library(tidyverse)
+library(sf)
 library(here)
-jan<-raster(here("wc2.1_5m_tavg_01.tif"))
-# have a look at the raster layer jan
-plot(jan)
+library(janitor)
+library(countrycode)
+
+```
+
+```{r read in data}
+HDI <- read_csv(here::here("Data", "Gender Inequality Index (GII).csv"),
+                       locale = locale(encoding = "latin1"),
+                       na = "..", skip=5)
+World <- st_read(here::here("Data", "World_Countries__Generalized_.shp"))
+
+```
+
+```{r select column}
+HDIcols<- HDI %>%
+  clean_names()%>%
+  select(country, x2019, x2010)%>%
+  mutate(difference=x2019-x2010)%>%
+  slice(1:189,)%>%
+  mutate(iso_code=countrycode(country, origin = 'country.name', destination = 'iso2c'))
+```
+
+
+```{r join}
+Join_HDI <- World %>% 
+  clean_names() %>%
+  left_join(., 
+            HDIcols,
+            by = c("aff_iso" = "iso_code"))
+
+
 ```
 
 
