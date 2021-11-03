@@ -11,7 +11,10 @@ library(sf)
 library(here)
 library(janitor)
 library(countrycode)
-
+library(tmap)
+library(tmaptools)
+library(OpenStreetMap)
+library(maptools)
 ```
 
 ```{r read in data}
@@ -42,4 +45,34 @@ Join_HDI <- World %>%
 
 ```
 
+```{r map, echo=FALSE, message=FALSE, warning=FALSE}
+tmap_mode("view")
+qtm(Join_HDI, 
+    fill = "difference")
+```
+
+```{r better map}
+
+tmapWorld <- Join_HDI %>%
+  st_bbox(.) %>% 
+  tmaptools::read_osm(., type = "osm", zoom = NULL)
+install.packages("rosm")
+library(rosm)
+bg = osm.raster(Join_HDI)
+
+tmap_mode("plot")
+
+#tm_shape(Join_HDI)+
+tm_rgb()+
+#tm_shape(Life_expectancy4map)+ 
+tm_polygons("difference", 
+        style="pretty",
+        palette="Blues",
+        midpoint=NA,
+        title="Number of years",
+        alpha = 0.5) + 
+  tm_compass(position = c("left", "bottom"),type = "arrow") + 
+  tm_scale_bar(position = c("left", "bottom")) +
+  tm_layout(title = "Difference in life expectancy", legend.position = c("right", "bottom"))
+```
 
