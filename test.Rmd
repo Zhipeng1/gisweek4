@@ -51,11 +51,12 @@ qtm(Join_HDI,
     fill = "difference")
 ```
 
-```{r better map}
+```{r better map havent finished}
 
 tmapWorld <- Join_HDI %>%
   st_bbox(.) %>% 
   tmaptools::read_osm(., type = "osm", zoom = NULL)
+a
 install.packages("rosm")
 library(rosm)
 bg = osm.raster(Join_HDI)
